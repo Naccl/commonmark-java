@@ -6,6 +6,7 @@ import org.commonmark.ext.ins.InsExtension;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.ext.front.matter.YamlFrontMatterExtension;
+import org.commonmark.ext.task.list.items.TaskListItemsExtension;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.commonmark.parser.Parser;
 import org.commonmark.testutil.example.Example;
@@ -24,6 +25,7 @@ public class SpecIntegrationTest extends SpecTestCase {
             InsExtension.create(),
             StrikethroughExtension.create(),
             TablesExtension.create(),
+            TaskListItemsExtension.create(),
             YamlFrontMatterExtension.create());
     private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
     // The spec says URL-escaping is optional, but the examples assume that it's enabled.
@@ -74,6 +76,10 @@ public class SpecIntegrationTest extends SpecTestCase {
         // YAML front matter block
         m.put("---\nFoo\n---\nBar\n---\nBaz\n", "<h2>Bar</h2>\n<p>Baz</p>\n");
         m.put("---\n---\n", "");
+
+        // Task list items
+        m.put("- [ ] task to do\n- [x] task done\n", "<ul>\n<li><input type=\"checkbox\" disabled=\"\"> task to do</li>\n" +
+                "<li><input type=\"checkbox\" disabled=\"\" checked=\"\"> task done</li>\n</ul>\n");
 
         return m;
     }
